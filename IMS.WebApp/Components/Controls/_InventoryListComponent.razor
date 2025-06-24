@@ -1,0 +1,40 @@
+﻿@inject IViewInventoriesByNameUseCase _ViewInventoriesByNameUseCase
+
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @* @if (inventories is not null && inventories.Count > 0) *@
+        @if (inventories?.Any() == true)
+        {
+            foreach (var inv in inventories)
+            {
+             <_InventoryListItemComponent Inventory="@inv"></_InventoryListItemComponent>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<Inventory>? inventories;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // In order to use the use case, we need to use
+        // Dependency Injection (DI) to get the use case instance.
+        // Thus we need to inject the use case into this component.
+
+        inventories = (await _ViewInventoriesByNameUseCase.ExecuteAsync()).ToList();
+    }
+}
