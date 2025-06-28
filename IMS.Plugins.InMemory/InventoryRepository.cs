@@ -17,12 +17,68 @@ namespace IMS.Plugins.InMemory
                 new Inventory{InventoryId = 4, InventoryName = "Bike Pedals", Quantity =20 , Price=1},
             };
         }
+
+        public Task AddInventoryAsync(Inventory inventory)
+        {
+            if(_inventories.Any(x => x.InventoryName.Equals(inventory.InventoryName, StringComparison.OrdinalIgnoreCase)))
+            {
+                return Task.CompletedTask;
+            }
+            var maxId = _inventories.Any() ? _inventories.Max(x => x.InventoryId) : 0;
+            inventory.InventoryId = maxId + 1;
+
+            _inventories.Add(inventory);
+
+            return Task.CompletedTask; 
+        }
+
+        public async Task DeleteInventoryByIdAsync(int inventoryId)
+        {
+            // Won't work for the case when DB is involved because DB doesn't have RemoveAll method.
+            //if(inventoryId <= 0)
+            //{
+            //    return ; // Invalid ID
+            //}
+            //_inventories.RemoveAll(x => x.InventoryId == inventoryId);
+
+            var invToDelete = _inventories.FirstOrDefault(x => x.InventoryId == inventoryId);
+            if (invToDelete is not null)
+            {
+                _inventories.Remove(invToDelete);
+            }
+            return ;
+        }
+
         public async Task<IEnumerable<Inventory>> GetInventoriesByNameAsync(string name)
         {
             if (string.IsNullOrEmpty(name))
                 return await Task.FromResult(_inventories);
 
             return await Task.FromResult(_inventories.Where(x => x.InventoryName.Contains(name, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        public async Task<Inventory> GetInventoryByIdAsync(int inventoryId)
+        {
+            var inv = _inventories.First(x => x.InventoryId == inventoryId);
+            return await Task.FromResult(inv);
+        }
+
+        public Task UpdateInventoryAsync(Inventory inventory)
+        {
+            if(_inventories.Any(x=>x.InventoryId != inventory.InventoryId && x.InventoryName.Equals(inventory.InventoryName, StringComparison.OrdinalIgnoreCase)))  
+            {
+                return Task.CompletedTask; // Inventory name already exists
+            }
+
+            var invToUpdate = _inventories.FirstOrDefault(x => x.InventoryId == inventory.InventoryId);
+            if(invToUpdate is not null)
+            {
+                invToUpdate.InventoryName = inventory.InventoryName;
+                invToUpdate.Quantity = inventory.Quantity;
+                invToUpdate.Price = inventory.Price;
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

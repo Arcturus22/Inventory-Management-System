@@ -11,8 +11,11 @@ builder.Services.AddRazorComponents();
 
 builder.Services.AddSingleton<IInventoryRepository, InventoryRepository >();
 
-builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNameUseCase>();
-
+builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewProductsByNameUseCase>();
+builder.Services.AddTransient<IAddInventoryUseCase, AddInventoryUseCase>();
+builder.Services.AddTransient<IEditInventoryUseCase, EditInventoryUseCase>();
+builder.Services.AddTransient<IViewInventoryByIdUseCase, ViewInventoryByIdUseCase>();
+builder.Services.AddTransient<IDeleteInventoryUseCase, DeleteInventoryUseCase>();
 
 var app = builder.Build();
 

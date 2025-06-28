@@ -10,6 +10,7 @@
             <th>Quantity</th>
             <th>Price</th>
             <th></th>
+            <th style="text-align:left"></th>
         </tr>
     </thead>
     <tbody>
@@ -28,13 +29,19 @@
 @code {
     private List<Inventory>? inventories;
 
+    [Parameter] public string? SearchInventoryFilter{ get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
+    // protected override async Task OnInitializedAsync()
+    // {
         // In order to use the use case, we need to use
         // Dependency Injection (DI) to get the use case instance.
         // Thus we need to inject the use case into this component.
 
-        inventories = (await _ViewInventoriesByNameUseCase.ExecuteAsync()).ToList();
+    // }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        inventories = (await _ViewInventoriesByNameUseCase.ExecuteAsync(SearchInventoryFilter??string.Empty)).ToList();
+                
     }
 }

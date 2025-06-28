@@ -1,11 +1,24 @@
-﻿@page "/inventories"
+﻿@page "/inventories/list"
+@inject NavigationManager _navigationManager
+
 
 <h3>Inventory List</h3>
 <br/>
 <br/>
+<SearchComponent OnSearch="HandleSearch"> </SearchComponent>
+<br />
 
-<_InventoryListComponent></_InventoryListComponent>
+<_InventoryListComponent SearchInventoryFilter="@inventoryNameToSearch"></_InventoryListComponent>
+<br/>
+
+<NavLink class="btn btn-primary" href="/inventories/add">Add Inventory</NavLink>
+
 
 @code {
+    private string? inventoryNameToSearch;
 
+    private void HandleSearch(string searchFilter)
+    {
+        inventoryNameToSearch = searchFilter;
+    }
 }
