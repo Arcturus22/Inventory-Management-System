@@ -11,16 +11,16 @@ namespace IMS.UseCases.Inventories
 {
     public class ViewInventoryByIdUseCase : IViewInventoryByIdUseCase
     {
-        private readonly IInventoryRepository inventory;
+        private readonly IInventoryRepository inventoryRepository;
 
-        public ViewInventoryByIdUseCase(IInventoryRepository inventory)
+        public ViewInventoryByIdUseCase(IInventoryRepository inventoryRepository)
         {
-            this.inventory = inventory;
+            this.inventoryRepository = inventoryRepository;
         }
         public async Task<Inventory> ExecuteAsync(int inventoryId)
         {
 
-            return await this.inventory.GetInventoryByIdAsync(inventoryId);
+            return await this.inventoryRepository.GetInventoryByIdAsync(inventoryId);
         }
     }
 }

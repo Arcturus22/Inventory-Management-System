@@ -1,0 +1,56 @@
+﻿<div class="card">
+    <div class="card-body">
+
+        <SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
+
+        @if (Product?.ProductInventories?.Any() == true)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var prodInv in this.Product.ProductInventories)
+                    {
+                        <tr>
+                            <td>@prodInv.Inventory?.InventoryName</td>
+                            <td>
+                                <input type="number" min="0" @bind-value="@prodInv.InventoryQuantity" />
+                            </td>
+                            <td>
+                                <button type="button"
+                                        class="btn btn-light"
+                                        @onclick="() => RemoveInventory(prodInv)">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public Product? Product { get; set; }
+
+    private void RemoveInventory(ProductInventory productInventory)
+    {
+        this.Product?.RemoveInventory(productInventory);
+    }
+
+    private void HandleInventorySelected(Inventory inventory)
+    {
+        this.Product?.AddInventory(inventory);
+    }
+
+}

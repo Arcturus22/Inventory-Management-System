@@ -1,0 +1,45 @@
+﻿@inject IViewProductsByNameUseCase _ViewProductsByNameUseCase
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+            <th style="text-align:left"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @* @if (products is not null && products.Count > 0) *@
+        @if (products?.Any() == true)
+        {
+            foreach (var inv in products)
+            {
+             <_ProductListItemComponent @rendermode="InteractiveServer" Product="@inv"></_ProductListItemComponent>
+            }
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<Product>? products;
+
+    [Parameter] public string? SearchProductFilter{ get; set; }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+        // In order to use the use case, we need to use
+        // Dependency Injection (DI) to get the use case instance.
+        // Thus we need to inject the use case into this component.
+
+    // }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        products = (await _ViewProductsByNameUseCase.ExecuteAsync(SearchProductFilter??string.Empty)).ToList();
+                
+    }
+}

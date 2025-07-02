@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace IMS.UseCases.Inventories
 {
     // Changed from internal to public to allow access from other projects  
-    public class ViewProductsByNameUseCase : IViewInventoriesByNameUseCase
+    public class ViewInventoriesByNameUseCase : IViewInventoriesByNameUseCase
     {
         private readonly IInventoryRepository _inventoryRepository;
 
-        public ViewProductsByNameUseCase(IInventoryRepository inventoryRepository)
+        public ViewInventoriesByNameUseCase(IInventoryRepository inventoryRepository)
         {
             _inventoryRepository = inventoryRepository;
         }

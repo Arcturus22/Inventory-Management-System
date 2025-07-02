@@ -1,0 +1,62 @@
+﻿@inject IViewInventoriesByNameUseCase _ViewInventoriesByNameUseCase;
+
+@* Search Bar *@
+<div class="input-group">
+    <input class="form-control"
+           placeholder="Type inventory name to search"
+           @bind-value="searchFilter" @bind-value:event="oninput">
+    </input>
+    <button type="button" class="btn btn-success input-group-text" @onclick="HandleSearchAsync"> Search </button>
+</div>
+
+@if (inventories?.Any() == true)
+{
+    <div class="search-result">
+
+        <ul>
+            @foreach (var inv in inventories)
+            {
+                <li @key="inv.InventoryId"
+                    @onclick="async () => { await HandleSelectInventory(inv); }">
+                    @inv.InventoryName
+                </li>
+
+            }
+        </ul>
+    </div>
+}
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<Inventory> OnInventorySelected { get; set; }
+
+    private string _searchFilter;
+
+    private string searchFilter
+    {
+        get => _searchFilter;
+        set
+        {
+            _searchFilter = value;
+            HandleSearchAsync();
+        }
+    }
+    private List<Inventory> inventories = new List<Inventory>();
+
+    private async Task HandleSearchAsync()
+    {
+        await Task.Delay(1000); // Simulate a Relative Long Running DB call
+        inventories = (await _ViewInventoriesByNameUseCase.ExecuteAsync(searchFilter)).ToList();
+
+        StateHasChanged();
+    }
+
+    private async Task HandleSelectInventory(Inventory inventory)
+    {
+        await OnInventorySelected.InvokeAsync(inventory);
+        inventories.Clear(); // Clear the search results after selection
+    }
+
+}

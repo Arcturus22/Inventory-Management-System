@@ -1,0 +1,67 @@
+﻿@page "/products/edit/{ProdId:int}"
+
+@inject IViewProductByIdUseCase _viewProductByIdUseCase
+@inject IEditProductUseCase _editProductUseCase;
+@inject NavigationManager _navigationManager;
+
+<h3>Edit Product</h3>
+<br />
+
+@if (product is not null)
+{
+
+    <EditForm Enhance="true" Model="product" FormName="EditProductForm" OnValidSubmit="UpdateProductAsync">
+
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">Product Name</label>
+            <InputText class="form-control" id="name" @bind-Value="@product.ProductName"></InputText>
+            <ValidationMessage For="@(() => product.ProductName)" class="text-danger"></ValidationMessage>
+        </div>
+
+        <div class="mb-3 form-group">
+            <label for="quantity" class="form-label">Quantity</label>
+            <InputNumber class="form-control" id="quantity" @bind-Value="@product.Quantity"></InputNumber>
+            <ValidationMessage For="@(() => product.Quantity)" class="text-danger"></ValidationMessage>
+        </div>
+
+        <div class="mb-3 form-group">
+            <label for="price" class="form-label">Price</label>
+            <InputNumber class="form-control" id="price" @bind-Value="@product.Price"></InputNumber>
+            <ValidationMessage For="@(() => product.Price)" class="text-danger"></ValidationMessage>
+        </div>
+
+        <button type="submit" class="btn btn-primary"> Update</button>
+        <NavLink class="btn btn-secondary mx-2" href="/products/list">Cancel</NavLink>
+
+    </EditForm>
+
+}
+
+
+
+@code {
+
+    [Parameter] public int ProdId { get; set; }
+    [SupplyParameterFromForm]
+    private Product? product { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(ProdId);
+        product ??= await _viewProductByIdUseCase.ExecuteAsync(ProdId);
+    }
+
+    private async Task UpdateProductAsync()
+    {
+        if (product is not null)
+        {
+
+            product.ProductId = ProdId;
+            await _editProductUseCase.ExecuteAsync(product);
+            _navigationManager.NavigateTo("/products/list");
+        }
+    }
+
+}
