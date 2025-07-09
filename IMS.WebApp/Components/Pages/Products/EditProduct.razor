@@ -1,5 +1,6 @@
 ﻿@page "/products/edit/{ProdId:int}"
 
+@rendermode InteractiveServer
 @inject IViewProductByIdUseCase _viewProductByIdUseCase
 @inject IEditProductUseCase _editProductUseCase;
 @inject NavigationManager _navigationManager;
@@ -32,6 +33,12 @@
             <ValidationMessage For="@(() => product.Price)" class="text-danger"></ValidationMessage>
         </div>
 
+        <div class="mb-3 form-group">
+            <label class="form-label">Inventories</label>
+            <ProductInventoriesComponent Product="this.product"></ProductInventoriesComponent>
+            <ValidationMessage For="@(() => product.ProductInventories)" class="text-danger"></ValidationMessage>
+        </div>
+
         <button type="submit" class="btn btn-primary"> Update</button>
         <NavLink class="btn btn-secondary mx-2" href="/products/list">Cancel</NavLink>
 
@@ -47,9 +54,9 @@
     [SupplyParameterFromForm]
     private Product? product { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected async override Task OnParametersSetAsync()
     {
-        Console.WriteLine(ProdId);
+        // Console.WriteLine(ProdId);
         product ??= await _viewProductByIdUseCase.ExecuteAsync(ProdId);
     }
 
