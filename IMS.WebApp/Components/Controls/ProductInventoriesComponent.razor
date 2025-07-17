@@ -1,4 +1,6 @@
-﻿<div class="card">
+﻿@inject IEditProductUseCase editProductUseCase;
+
+<div class="card">
     <div class="card-body">
 
         <SearchProductInventoriesComponent OnInventorySelected="HandleInventorySelected"></SearchProductInventoriesComponent>
@@ -48,7 +50,7 @@
         this.Product?.RemoveInventory(productInventory);
     }
 
-    private void HandleInventorySelected(Inventory inventory)
+    private async Task HandleInventorySelected(Inventory inventory)
     {
         this.Product?.AddInventory(inventory);
     }

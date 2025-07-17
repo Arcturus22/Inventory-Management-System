@@ -64,7 +64,6 @@
     {
         if (product is not null)
         {
-
             product.ProductId = ProdId;
             await _editProductUseCase.ExecuteAsync(product);
             _navigationManager.NavigateTo("/products/list");
