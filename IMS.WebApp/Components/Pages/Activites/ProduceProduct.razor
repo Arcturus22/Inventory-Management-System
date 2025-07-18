@@ -26,7 +26,7 @@
 
             <div class="form-group">
                 <AutoCompleteComponent Label="Product to Produce"
-                                       SearchFunction="SearchProduct"
+                                       SearchFunction="SearchProductAsync"
                                        OnItemSelected="HandleItemSelected">
                 </AutoCompleteComponent>
 
@@ -62,9 +62,9 @@
         }
     }
 
-    private List<ItemViewModel>? SearchProduct(string name)
+    private async Task<List<ItemViewModel>?> SearchProductAsync(string name)
     {
-        var list = ViewProductsByNameUseCase.ExecuteAsync(name).GetAwaiter().GetResult();
+        var list = await ViewProductsByNameUseCase.ExecuteAsync(name);
         if (list is null)
             return null;
 

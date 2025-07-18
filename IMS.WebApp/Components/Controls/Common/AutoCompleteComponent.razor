@@ -35,7 +35,7 @@
 
     // Function Delegate - A fucntion Pointer that has string as input and returns a list of ItemViewModel
     [Parameter]
-    public Func<string, List<ItemViewModel>>? SearchFunction { get; set; }
+    public Func<string, Task<List<ItemViewModel>>>? SearchFunction { get; set; }
 
     [Parameter] public EventCallback<ItemViewModel> OnItemSelected { get; set; }
 
@@ -52,14 +52,23 @@
             if (!string.IsNullOrEmpty(_userInput) && SearchFunction != null)
             {
                 // Call the SearchFunction with the user input and get the results
-                searchResults = SearchFunction.Invoke(_userInput);
-
+                ViewItemsAsync();
             }
         }
     }
 
     private ItemViewModel? currentItem = null;
     private int currentItemIndex = -1;
+
+    private async Task ViewItemsAsync()
+    {
+        if(SearchFunction != null)
+        {
+            searchResults = await SearchFunction(_userInput);
+
+            StateHasChanged(); // Refresh the component to show search results
+        }
+    }
 
     private void HandleSelectItem(ItemViewModel item)
     {
