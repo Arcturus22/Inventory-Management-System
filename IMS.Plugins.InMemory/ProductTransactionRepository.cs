@@ -24,6 +24,7 @@ namespace IMS.Plugins.InMemory
             this.inventoryTransactionRepository = inventoryTransactionRepository;
             this.inventoryRepository = inventoryRepository;
         }
+
         public async Task ProduceAsync(string productionNumber, Product product, int quantity, string doneby)
         {
             var prod = await productRepository.GetProductByIdAsync(product.ProductId);
@@ -39,7 +40,7 @@ namespace IMS.Plugins.InMemory
                             pi.Inventory,
                             pi.InventoryQuantity * quantity,
                             doneby,
-                            -1);
+                            0);
 
             // Decrease Inventories
                         var inv = await inventoryRepository.GetInventoryByIdAsync(pi.InventoryId);
@@ -79,5 +80,36 @@ namespace IMS.Plugins.InMemory
 
             return Task.CompletedTask;
         }
+
+        public async Task<IEnumerable<ProductTransaction>> GetProductTransactionAsync(string prodName, DateTime? dateFrom, DateTime? dateTo, ProductTransactionType? transactionType)
+        {
+            var products = (await productRepository.GetProductsByNameAsync(string.Empty)).ToList();
+
+            var query = from pt in _productTransactions
+                        join p in products on pt.ProductId equals p.ProductId
+                        where
+                            (string.IsNullOrWhiteSpace(prodName) || p.ProductName.ToLower().IndexOf(prodName.ToLower()) >= 0)
+                            &&
+                            (!dateFrom.HasValue || pt.TransactionDate >= dateFrom.Value.Date) &&
+                            (!dateTo.HasValue || pt.TransactionDate <= dateTo.Value.Date) &&
+                            (!transactionType.HasValue || pt.ActivityType == transactionType.Value)
+                        select new ProductTransaction
+                        {
+                            Product = p,
+                            ProductTransactionId = pt.ProductTransactionId,
+                            ProductionNumber = pt.ProductionNumber,
+                            SONumber = pt.SONumber,
+                            ProductId = pt.ProductId,
+                            QuantityBefore = pt.QuantityBefore,
+                            QuantityAfter = pt.QuantityAfter,
+                            ActivityType = pt.ActivityType,
+                            TransactionDate = pt.TransactionDate,
+                            DoneBy = pt.DoneBy,
+                            UnitPrice = pt.UnitPrice
+                        };
+
+            return query;
+        }
+
     }
 }

@@ -1,12 +1,14 @@
 using IMS.Plugins.InMemory;
+using IMS.UseCases.Activities;
+using IMS.UseCases.Activities.Interfaces;
 using IMS.UseCases.Inventories;
 using IMS.UseCases.Inventories.Interfaces;
 using IMS.UseCases.PluginInterfaces;
-using IMS.UseCases.Products.interfaces;
 using IMS.UseCases.Products;
+using IMS.UseCases.Products.interfaces;
+using IMS.UseCases.Reports;
+using IMS.UseCases.Reports.Interfaces;
 using IMS.WebApp.Components;
-using IMS.UseCases.Activities.Interfaces;
-using IMS.UseCases.Activities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,11 @@ builder.Services.AddTransient<IViewProductByIdUseCase, ViewProductByIdUseCase>()
 builder.Services.AddTransient<IPurchaseInventoryUseCase, PurchaseInventoryUseCase>();
 builder.Services.AddTransient<IProduceProductUseCase, ProduceProductUseCase>();
 builder.Services.AddTransient<ISellProductUseCase, SellProductUseCase>();
+
+// Register the in-memory Reports repository
+builder.Services.AddTransient<ISearchInventoryTransactionsUseCase, SearchInventoryTransactionsUseCase>();
+builder.Services.AddTransient<ISearchProductTransactionUseCase, SearchProductTransactionUseCase>();
+
 
 var app = builder.Build();
 
