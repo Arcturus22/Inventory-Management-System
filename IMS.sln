@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IMS.Plugins", "IMS.Plugins"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Plugins.InMemory", "IMS.Plugins.InMemory\IMS.Plugins.InMemory.csproj", "{3C85691C-FD85-42A6-AA5F-F679530D430E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Plugins.EFCoreSqlServer", "IMS.Plugins\IMS.Plugins.EFCoreSqlServer\IMS.Plugins.EFCoreSqlServer.csproj", "{F714F5F8-0344-4B6D-93A5-2F54A535C3E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,12 +37,17 @@ Global
 		{3C85691C-FD85-42A6-AA5F-F679530D430E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C85691C-FD85-42A6-AA5F-F679530D430E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C85691C-FD85-42A6-AA5F-F679530D430E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F714F5F8-0344-4B6D-93A5-2F54A535C3E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F714F5F8-0344-4B6D-93A5-2F54A535C3E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F714F5F8-0344-4B6D-93A5-2F54A535C3E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F714F5F8-0344-4B6D-93A5-2F54A535C3E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3C85691C-FD85-42A6-AA5F-F679530D430E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F714F5F8-0344-4B6D-93A5-2F54A535C3E3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {876872D6-1EAD-4B21-AA9A-84F1122492FB}

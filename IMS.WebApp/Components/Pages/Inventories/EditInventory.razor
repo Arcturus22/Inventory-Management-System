@@ -53,22 +53,40 @@
     [Parameter] public int InvId { get; set; }
 
     [SupplyParameterFromForm]
-    private Inventory? inventory { get; set; }
+    private InventoryViewModel? inventory { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         // Here we are calling the use case repository to get the inventory by Id
         // We are not using the _inventoryRepository directly in this component like we could
         // just directly call the method, but we are using the use case to keep the separation of concerns
-        inventory ??= await _viewInventoryByIdUseCase.ExecuteAsync(InvId);
+        // inventory ??= await _viewInventoryByIdUseCase.ExecuteAsync(InvId);
 
+        if(inventory is null)
+        {
+            var inv = await _viewInventoryByIdUseCase.ExecuteAsync(InvId);
+            inventory = new InventoryViewModel
+                {
+                    InventoryId = inv.InventoryId,
+                    InventoryName = inv.InventoryName,
+                    Price = inv.Price,
+                    Quantity = inv.Quantity
+                };
+        }
 
     }
     private async Task UpdateAsync(EditContext args)
     {
         if (inventory is not null)
         {
-            await _editInventoryUseCase.ExecuteAsync(inventory);
+            var inv = new Inventory
+                {
+                    InventoryId = inventory.InventoryId,
+                    InventoryName = inventory.InventoryName,
+                    Price = inventory.Price,
+                    Quantity = inventory.Quantity
+                };
+            await _editInventoryUseCase.ExecuteAsync(inv);
             _navigationManager.NavigateTo("/inventories/list");
         }
     }

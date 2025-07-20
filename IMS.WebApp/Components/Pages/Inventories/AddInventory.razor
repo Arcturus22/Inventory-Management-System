@@ -44,11 +44,19 @@
 
 @code {
     [SupplyParameterFromForm]
-    private Inventory inventory { get; set; } = new Inventory();
+    private InventoryViewModel inventory { get; set; } = new InventoryViewModel();
 
     private async Task SaveAsync()
     {
-        await _AddInventoryUseCase.ExecuteAsync(inventory);
+        var inv = new Inventory
+            {
+                InventoryId = inventory.InventoryId,
+                InventoryName = inventory.InventoryName,
+                Price = inventory.Price,
+                Quantity = inventory.Quantity
+            };
+
+        await _AddInventoryUseCase.ExecuteAsync(inv);
 
         _NavigationManager.NavigateTo("/inventories/list");
     }

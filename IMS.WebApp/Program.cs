@@ -1,3 +1,4 @@
+using IMS.Plugins.EFCoreSqlServer;
 using IMS.Plugins.InMemory;
 using IMS.UseCases.Activities;
 using IMS.UseCases.Activities.Interfaces;
@@ -9,18 +10,44 @@ using IMS.UseCases.Products.interfaces;
 using IMS.UseCases.Reports;
 using IMS.UseCases.Reports.Interfaces;
 using IMS.WebApp.Components;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Shouldn't use AddDbContext coz we dont know when to destroy the instance
+builder.Services.AddDbContextFactory<IMSContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("InventoryManagementSystem"));
+
+});
+
 // Add support for interactive server components in Razor Components as Dependencies SECOND STEP
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<IInventoryRepository, InventoryRepository >();
-builder.Services.AddSingleton<IProductRepository, ProductRepository>();
-builder.Services.AddSingleton<IInventoryTransactionRepository, InventoryTransactionRepository>();
-builder.Services.AddSingleton<IProductTransactionRepository, ProductTransactionRepository>();
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    // We need to enable Static Assets to load the stylesheets and everything in wwwroot folder
+    StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
+
+    // For registering dependencies of IN-MEMORY DATA STORE -- Very good for Testing
+    builder.Services.AddSingleton<IInventoryRepository, InventoryRepository>();
+    builder.Services.AddSingleton<IProductRepository, ProductRepository>();
+    builder.Services.AddSingleton<IInventoryTransactionRepository, InventoryTransactionRepository>();
+    builder.Services.AddSingleton<IProductTransactionRepository, ProductTransactionRepository>();
+}
+else
+{
+    // For registering dependencies of EF CORE sql server -- REAL Database
+    // EF CORE - NOT THREAD SAFE - therefore not want to hold a repository in memory for long time
+    builder.Services.AddTransient<IInventoryRepository, InventoryEFCoreRepository>();
+    builder.Services.AddTransient<IProductRepository, ProductEFCoreRepository>();
+    builder.Services.AddTransient<IInventoryTransactionRepository, InventoryTransactionEFCoreRepository>();
+    builder.Services.AddTransient<IProductTransactionRepository, ProductTransactionEFCoreRepository>();
+}
 
 // Register the in-memory inventory repository
 builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNameUseCase>();
