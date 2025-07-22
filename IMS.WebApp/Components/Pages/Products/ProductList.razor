@@ -1,4 +1,7 @@
 ﻿@page "/products/list"
+
+@attribute [Authorize(Policy = "Inventory")]
+
 @inject NavigationManager _navigationManager
 
 

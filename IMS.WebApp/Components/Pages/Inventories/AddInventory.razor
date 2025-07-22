@@ -1,5 +1,7 @@
 ﻿@page "/inventories/add"
 
+@attribute [Authorize(Policy = "Inventory")]
+
 @inject IAddInventoryUseCase _AddInventoryUseCase;
 @inject NavigationManager _NavigationManager
 

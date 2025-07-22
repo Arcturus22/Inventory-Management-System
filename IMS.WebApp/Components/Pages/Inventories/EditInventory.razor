@@ -1,4 +1,7 @@
 ﻿@page "/inventories/edit/{InvId:int}"
+
+@attribute [Authorize(Policy = "Inventory")]
+
 @using IMS.UseCases.PluginInterfaces
 @inject IViewInventoryByIdUseCase _viewInventoryByIdUseCase
 @inject IEditInventoryUseCase _editInventoryUseCase

@@ -1,4 +1,10 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">IMS.WebApp</a>
     </div>
@@ -15,12 +21,6 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="inventories/list">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Inventories
             </NavLink>
@@ -31,19 +31,19 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Products
             </NavLink>
         </div>
-        
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="purchase">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Purchase Inventory
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Purchase
             </NavLink>
         </div>
-       
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="produce">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Produce Product
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Produce
             </NavLink>
         </div>
-        
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="sell">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Sell Products
@@ -51,18 +51,70 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="inventoryReport">
+            <NavLink class="nav-link" href="inventories/report">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Inventory Report
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="productReport">
+            <NavLink class="nav-link" href="products/report">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Product Report
             </NavLink>
         </div>
 
-        
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Manage">
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <form action="Account/Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <button type="submit" class="nav-link">
+                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                        </button>
+                    </form>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Register">
+                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Login">
+                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </nav>
 </div>
 
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

@@ -1,0 +1,47 @@
+﻿@page "/Account/Manage/Users"
+
+@attribute [Authorize(Policy = "Admin")]
+@inject UserManager<ApplicationUser> UserManager;
+
+@using IMS.WebApp.Data
+@using Microsoft.AspNetCore.Identity
+
+
+<h3>ManageUsers</h3>
+<br/>
+
+@if( users?.Any() ?? false)
+{
+    <table class="table table-bordered table-striped ">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var user in users)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>
+                        <a href="/account/manage/@user.Id" class="btn btn-link"> Manage</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<ApplicationUser>? users;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        users = UserManager.Users.ToList();
+
+    }
+
+}

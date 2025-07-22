@@ -1,5 +1,8 @@
 ﻿@page "/products/edit/{ProdId:int}"
 
+
+@attribute [Authorize(Policy = "Inventory")]
+
 @rendermode InteractiveServer
 @inject IViewProductByIdUseCase _viewProductByIdUseCase
 @inject IEditProductUseCase _editProductUseCase;
